@@ -1,12 +1,39 @@
+from app.core.llm_gateway import LLMGateway
+from app.core.agent_registry import AgentRegistry
 from app.core.tracing import trace_node
+
+llm = LLMGateway.get_model()
 
 
 @trace_node("router")
 def route(state):
 
-    query = state["messages"][-1].content.lower()
+    query = state["messages"][-1].content
 
-    if "code" in query or "python" in query:
-        return "coding"
+    agents = AgentRegistry.list_agents()
 
-    return "search"
+    prompt = f"""
+You are an intelligent router for an AI agent system.
+
+Available agents:
+{agents}
+
+Rules:
+- Choose the single best agent
+- Return ONLY the agent name
+- No explanation
+
+User query:
+{query}
+"""
+
+    response = llm.invoke(prompt)
+
+    agent = response.content.strip()
+
+    print(f"Routed to agent: {agent}")
+    # fallback safety
+    if agent not in agents:
+        return agents[0]
+
+    return agent
