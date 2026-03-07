@@ -13,3 +13,7 @@ class AgentRegistry:
     @classmethod
     def list_agents(cls):
         return list(cls._agents.keys())
+
+    @classmethod
+    def all_agents(cls):
+        return cls._agents

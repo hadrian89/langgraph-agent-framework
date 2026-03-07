@@ -4,6 +4,7 @@ load_dotenv()
 from fastapi import FastAPI
 from langchain_core.messages import HumanMessage
 from app.graph import build_graph
+from app.core.graph_builder import build_graph
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -12,6 +13,7 @@ from app.core.telemetry import tracer
 
 from app.core.agent_loader import load_agents
 from app.core.tool_loader import load_tools
+from app.core.graph_builder import build_graph
 
 load_tools()
 load_agents()
@@ -19,7 +21,6 @@ load_agents()
 app = FastAPI()
 
 graph = build_graph()
-
 
 @app.post("/chat")
 def chat(query: str):
