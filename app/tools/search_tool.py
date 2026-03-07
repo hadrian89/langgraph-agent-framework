@@ -25,17 +25,19 @@ def search_guard(query: str):
 
     for pattern in BLOCKED_SEARCH_PATTERNS:
         if pattern in q:
-            raise ValueError("Search query blocked by guardrails")
+            return "Search query blocked by guardrails."
 
     return query
 
 
-def guarded_search(query: str):
+def guarded_search(query):
     """
     Perform a web search using DuckDuckGo.
-    Use this tool for retrieving factual information,
-    news, or general knowledge from the internet.
     """
+
+    # Handle structured tool inputs
+    if isinstance(query, dict) and "value" in query:
+        query = query["value"]
 
     query = search_guard(query)
 

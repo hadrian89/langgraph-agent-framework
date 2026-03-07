@@ -111,3 +111,13 @@ MIT
 # authentication
 # deployment EKS/Agentcore
 # guardrails 
+# Source - https://stackoverflow.com/a/7173011
+# Posted by Sean Patrick Floyd, modified by community. See post 'Timeline' for change history
+# Retrieved 2026-03-07, License - CC BY-SA 4.0
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"prompt":"who is PM of India"}' \
+  https://bedrock-agentcore.eu-west-2.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aeu-west-2%3A317112499880%3Aruntime%2Fagentaiframework-XtFV52GIZk/invocations?qualifier=DEFAULT
+
+    http://localhost:8080/invocations

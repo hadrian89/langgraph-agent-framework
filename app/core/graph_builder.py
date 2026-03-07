@@ -5,6 +5,12 @@ from app.state import AgentState
 from app.core.agent_registry import AgentRegistry
 from app.core.tools_registry import ToolRegistry
 from app.core.router import route
+from langgraph_checkpoint_aws import AgentCoreMemorySaver
+
+
+REGION = "eu-west-2"
+MEMORY_ID = "agentframework_mem-0kn5PJ2mTf"
+MODEL_ID = "gpt-4o-mini"
 
 
 def should_continue(state):
@@ -18,7 +24,7 @@ def should_continue(state):
 
 
 def build_graph():
-
+    checkpointer = AgentCoreMemorySaver(MEMORY_ID, region_name=REGION)
     graph = StateGraph(AgentState)
 
     tools = ToolRegistry.get_tools()
@@ -53,4 +59,4 @@ def build_graph():
         {name: name for name in agents.keys()}
     )
 
-    return graph.compile()
+    return graph.compile(checkpointer=checkpointer)
