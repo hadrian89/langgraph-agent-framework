@@ -108,11 +108,16 @@ The system automatically adds it to the graph.
 
 MIT
 
-# To test with agentcore
+# To run with agentcore
+```
+agentcore dev
+```
+## To test with agentcore
+```
 curl --header "Content-Type: application/json" \
   --request POST \
   --data '{"prompt":"who is PM of India"}' \
   http://localhost:8080/invocations
-
+```
 
 <!-- https://bedrock-agentcore.eu-west-2.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aeu-west-2%3A317112499880%3Aruntime%2Fagentaiframework-XtFV52GIZk/invocations?qualifier=DEFAULT -->
