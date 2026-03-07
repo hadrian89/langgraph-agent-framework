@@ -3,7 +3,7 @@ load_dotenv()
 
 from fastapi import FastAPI
 from langchain_core.messages import HumanMessage
-from graph import build_graph
+from app.graph import build_graph
 
 app = FastAPI()
 

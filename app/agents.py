@@ -1,5 +1,5 @@
 from langchain_openai import ChatOpenAI
-from tools import tools
+from app.tools import tools
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
