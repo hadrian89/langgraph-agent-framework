@@ -22,20 +22,7 @@ A modular AI agent platform built with:
 ---
 
 ## Architecture
-User
-↓
-FastAPI API
-↓
-LangGraph Orchestrator
-↓
-Router
-↓
-Agent Registry
-↓
-Agents
-↓
-Tools
-
+User -> FastAPI API -> LangGraph Orchestrator -> Router -> Agent Registry -> Agents -> Tools
 
 ---
 
@@ -100,10 +87,10 @@ The platform supports OpenTelemetry tracing.
 
 Example trace structure:
 agent_request
-├── router
-├── search_agent
-├── tool_execution
-└── response_generation
+=> router
+=> search_agent
+=> tool_execution
+=> response_generation
 
 ---
 
