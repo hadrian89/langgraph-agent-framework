@@ -23,8 +23,11 @@ def should_continue(state):
     return END
 
 
-def build_graph():
-    checkpointer = AgentCoreMemorySaver(MEMORY_ID, region_name=REGION)
+def build_graph(endpoint_type):
+    if endpoint_type == "agentcore":
+        checkpointer = AgentCoreMemorySaver(MEMORY_ID, region_name=REGION)
+
+    
     graph = StateGraph(AgentState)
 
     tools = ToolRegistry.get_tools()
@@ -58,5 +61,6 @@ def build_graph():
         route,
         {name: name for name in agents.keys()}
     )
-
-    return graph.compile(checkpointer=checkpointer)
+    if endpoint_type == "agentcore":
+        return graph.compile(checkpointer=checkpointer)
+    return graph.compile()

@@ -15,7 +15,7 @@ load_tools()
 load_agents()
 
 
-graph = build_graph()
+graph = build_graph("")
 
 def stream_agent(query: str):
     

@@ -13,7 +13,7 @@ load_tools()
 load_agents()
 
 
-graph = build_graph() # Memory management handled below
+graph = build_graph("agentcore") # Memory management handled below
 
 @app.entrypoint
 async def handle_request(payload):
