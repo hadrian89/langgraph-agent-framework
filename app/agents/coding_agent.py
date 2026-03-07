@@ -13,15 +13,6 @@ Rules:
 - If explaining code, explain AFTER the code block.
 """
 
-def format_code(text):
-
-    if "def " in text or "import " in text:
-
-        return f"```python\n{text}\n```"
-
-    return text
-
-
 def coding_agent(state):
 
     response = llm.invoke(state["messages"])
@@ -29,4 +20,4 @@ def coding_agent(state):
     return {"messages": [response]}
 
 
-AgentRegistry.register("coding", coding_agent,"Handles programming, algorithms, debugging, and code generation")
+AgentRegistry.register("coding", coding_agent,SYSTEM_PROMPT)

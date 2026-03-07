@@ -6,6 +6,8 @@ from app.core.tool_loader import load_tools
 from fastapi.responses import StreamingResponse
 
 from app.core.graph_builder import build_graph
+from app.core.guardrails import validate_input, validate_output
+
 
 router = APIRouter()
 
@@ -16,7 +18,7 @@ load_agents()
 graph = build_graph()
 
 def stream_agent(query: str):
-
+    
     inputs = {"messages": [HumanMessage(content=query)]}
 
     for event in graph.stream(inputs):
@@ -34,7 +36,10 @@ def stream_agent(query: str):
                     
 @router.get("/chat/stream")
 async def chat_stream(query: str):
-
+    if not validate_input(query):
+        return {
+            "response": "Your request violates safety policies."
+        }
     return StreamingResponse(
         stream_agent(query),
         media_type="text/event-stream"
@@ -42,12 +47,19 @@ async def chat_stream(query: str):
     
 @router.post("/chat")
 async def chat(query: str):
+    if not validate_input(query):
+        return {
+            "response": "Your request violates safety policies."
+        }
     with anyio.fail_after(30):
         result = graph.invoke(
             {"messages": [HumanMessage(content=query)]}
         )
         print(f"Graph result: {result}")
-
+        
+    response = result["messages"][-1].content
+    if not validate_output(response):
+        response = "Response blocked due to safety policy."
     return {
-        "response": result["messages"][-1].content
+        "response": response
     }
