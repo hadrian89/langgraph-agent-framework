@@ -1,19 +1,37 @@
 import os
+
 from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 
 
 class LLMGateway:
 
-    _models = {}
+    _model = None
 
     @classmethod
-    def get_model(cls, model_name="gpt-4o-mini", temperature=0):
+    def get_model(cls):
 
-        if model_name not in cls._models:
-            cls._models[model_name] = ChatOpenAI(
-                model=model_name,
-                temperature=temperature,
-                api_key=os.getenv("OPENAI_API_KEY")
+        if cls._model:
+            return cls._model
+
+        provider = os.getenv("LLM_PROVIDER", "openai")
+
+        if provider == "openai":
+
+            cls._model = ChatOpenAI(
+                model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+                temperature=0
             )
 
-        return cls._models[model_name]
+        elif provider == "ollama":
+
+            cls._model = ChatOllama(
+                model=os.getenv("OLLAMA_MODEL", "llama3.2"),
+                base_url="http://localhost:11434",
+                temperature=0
+            )
+
+        else:
+            raise ValueError(f"Unsupported provider: {provider}")
+
+        return cls._model
