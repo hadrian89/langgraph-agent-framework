@@ -9,6 +9,7 @@ dependencies = [
     "ddgs>=9.11.2",
     "duckduckgo-search>=8.1.1",
     "fastapi>=0.135.1",
+    "gradio>=6.9.0",
     "langchain>=1.2.10",
     "langchain-community>=0.4.1",
     "langchain-ollama>=1.0.1",
@@ -18,5 +19,6 @@ dependencies = [
     "opentelemetry-exporter-otlp>=1.40.0",
     "opentelemetry-sdk>=1.40.0",
     "python-dotenv>=1.2.2",
+    "requests>=2.32.5",
     "uvicorn>=0.41.0",
 ]
