@@ -7,3 +7,5 @@ python-dotenv
 ddgs
 fastapi 
 uvicorn
+opentelemetry-api 
+opentelemetry-sdk

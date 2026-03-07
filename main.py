@@ -4,6 +4,11 @@ load_dotenv()
 from fastapi import FastAPI
 from langchain_core.messages import HumanMessage
 from app.graph import build_graph
+from app.core.agent_loader import load_agents
+from app.core.tool_loader import load_tools
+
+load_tools()
+load_agents()
 
 app = FastAPI()
 
@@ -16,5 +21,6 @@ def chat(query: str):
     result = graph.invoke(
         {"messages": [HumanMessage(content=query)]}
     )
+    print(result)
 
     return {"response": result["messages"][-1].content}

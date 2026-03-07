@@ -1,47 +1,54 @@
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
+
 from app.state import AgentState
-from app.tools import tools
-from app.agents import planner_agent, executor_agent, supervisor_agent
-from app.evaluator import evaluate_response
-
-tool_node = ToolNode(tools)
+from app.core.agent_registry import AgentRegistry
+from app.core.tools_registry import ToolRegistry
+from app.core.router import route
 
 
-def should_use_tool(state):
+def should_continue(state: AgentState):
 
-    last = state["messages"][-1]
+    last_message = state["messages"][-1]
 
-    if last.tool_calls:
+    if last_message.tool_calls:
         return "tools"
 
-    return "evaluate"
+    return END
 
 
 def build_graph():
 
     graph = StateGraph(AgentState)
 
-    graph.add_node("planner", planner_agent)
-    graph.add_node("executor", executor_agent)
+    tools = ToolRegistry.get_tools()
+
+    graph.add_node("search", AgentRegistry.get_agent("search"))
+    graph.add_node("coding", AgentRegistry.get_agent("coding"))
+
+    tool_node = ToolNode(tools)
+
     graph.add_node("tools", tool_node)
-    graph.add_node("evaluate", evaluate_response)
 
-    graph.set_entry_point("planner")
-
-    graph.add_edge("planner", "executor")
-
-    graph.add_conditional_edges(
-        "executor",
-        should_use_tool,
+    graph.set_conditional_entry_point(
+        route,
         {
-            "tools": "tools",
-            "evaluate": "evaluate",
-        },
+            "search": "search",
+            "coding": "coding",
+        }
     )
 
-    graph.add_edge("tools", "executor")
+    graph.add_conditional_edges(
+        "search",
+        should_continue,
+        {
+            "tools": "tools",
+            END: END,
+        }
+    )
 
-    graph.add_edge("evaluate", END)
+    graph.add_edge("tools", "search")
+
+    graph.add_edge("coding", END)
 
     return graph.compile()
