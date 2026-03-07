@@ -30,6 +30,7 @@ def build_graph():
     # dynamically register all agents
     agents = AgentRegistry.all_agents()
     print("Agents in graph:", AgentRegistry.list_agents())
+    print("Graph agents:", agents.keys())
     for name, agent in agents.items():
 
         graph.add_node(name, agent)
@@ -47,7 +48,6 @@ def build_graph():
     for name in agents.keys():
         graph.add_edge("tools", name)
 
-    # dynamic entry point
     graph.set_conditional_entry_point(
         route,
         {name: name for name in agents.keys()}

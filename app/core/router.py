@@ -13,27 +13,24 @@ def route(state):
     agents = AgentRegistry.list_agents()
 
     prompt = f"""
-You are an intelligent router for an AI agent system.
+You are a router for an AI agent system.
 
 Available agents:
 {agents}
 
-Rules:
-- Choose the single best agent
-- Return ONLY the agent name
-- No explanation
-
 User query:
 {query}
+
+Return ONLY the best agent name.
 """
 
     response = llm.invoke(prompt)
 
     agent = response.content.strip()
 
-    print(f"Routed to agent: {agent}")
-    # fallback safety
     if agent not in agents:
-        return agents[0]
+        agent = agents[0]
+
+    print(f"Routed to agent: {agent}")
 
     return agent
