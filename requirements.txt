@@ -5,3 +5,5 @@ langchain-community
 duckduckgo-search 
 python-dotenv
 ddgs
+fastapi 
+uvicorn

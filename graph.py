@@ -1,50 +1,47 @@
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
-from langchain_openai import ChatOpenAI
 from state import AgentState
 from tools import tools
-
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-
-llm_with_tools = llm.bind_tools(tools)
+from agents import planner_agent, executor_agent, supervisor_agent
+from evaluator import evaluate_response
 
 tool_node = ToolNode(tools)
 
 
-def agent_node(state: AgentState):
-    messages = state["messages"]
-    response = llm_with_tools.invoke(messages)
-    return {"messages": [response]}
+def should_use_tool(state):
 
+    last = state["messages"][-1]
 
-def should_continue(state: AgentState):
-
-    last_message = state["messages"][-1]
-
-    if last_message.tool_calls:
+    if last.tool_calls:
         return "tools"
 
-    return END
+    return "evaluate"
 
 
 def build_graph():
 
     graph = StateGraph(AgentState)
 
-    graph.add_node("agent", agent_node)
+    graph.add_node("planner", planner_agent)
+    graph.add_node("executor", executor_agent)
     graph.add_node("tools", tool_node)
+    graph.add_node("evaluate", evaluate_response)
 
-    graph.set_entry_point("agent")
+    graph.set_entry_point("planner")
+
+    graph.add_edge("planner", "executor")
 
     graph.add_conditional_edges(
-        "agent",
-        should_continue,
+        "executor",
+        should_use_tool,
         {
             "tools": "tools",
-            END: END,
+            "evaluate": "evaluate",
         },
     )
 
-    graph.add_edge("tools", "agent")
+    graph.add_edge("tools", "executor")
+
+    graph.add_edge("evaluate", END)
 
     return graph.compile()

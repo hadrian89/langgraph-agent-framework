@@ -3,23 +3,38 @@ from tools import tools
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
-search_agent = llm.bind_tools(tools)
+planner_llm = ChatOpenAI(model="gpt-4o-mini")
 
-finance_agent = ChatOpenAI(model="gpt-4o-mini")
-
-coding_agent = ChatOpenAI(model="gpt-4o-mini")
+executor_llm = llm.bind_tools(tools)
 
 
-def search_node(state):
-    response = search_agent.invoke(state["messages"])
+def planner_agent(state):
+    messages = state["messages"]
+
+    plan = planner_llm.invoke(
+        f"Create a short plan to answer: {messages[-1].content}"
+    )
+
+    return {"plan": plan.content}
+
+
+def executor_agent(state):
+
+    messages = state["messages"]
+
+    response = executor_llm.invoke(messages)
+
     return {"messages": [response]}
 
 
-def finance_node(state):
-    response = finance_agent.invoke(state["messages"])
-    return {"messages": [response]}
+def supervisor_agent(state):
 
+    query = state["messages"][-1].content.lower()
 
-def coding_node(state):
-    response = coding_agent.invoke(state["messages"])
-    return {"messages": [response]}
+    if "calculate" in query or "python" in query:
+        return "executor"
+
+    if "news" in query or "latest" in query:
+        return "executor"
+
+    return "executor"
