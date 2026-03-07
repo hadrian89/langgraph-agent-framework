@@ -6,9 +6,18 @@ from app.core.agent_registry import AgentRegistry
 from app.core.tools_registry import ToolRegistry
 from app.core.router import route
 
+from app.core.tracing import trace_node
+from langgraph.prebuilt import ToolNode
 
-def should_continue(state: AgentState):
 
+class TracedToolNode(ToolNode):
+
+    @trace_node("tool_execution")
+    def __call__(self, *args, **kwargs):
+        return super().__call__(*args, **kwargs)
+
+def should_continue(state):
+    #print("STATE MESSAGES:", state["messages"])
     last_message = state["messages"][-1]
 
     if last_message.tool_calls:
@@ -23,13 +32,16 @@ def build_graph():
 
     tools = ToolRegistry.get_tools()
 
-    graph.add_node("search", AgentRegistry.get_agent("search"))
-    graph.add_node("coding", AgentRegistry.get_agent("coding"))
+    search_agent = AgentRegistry.get_agent("search")
+    coding_agent = AgentRegistry.get_agent("coding")
 
-    tool_node = ToolNode(tools)
+    graph.add_node("search", search_agent)
+    graph.add_node("coding", coding_agent)
 
+    tool_node = TracedToolNode(tools)
     graph.add_node("tools", tool_node)
 
+    # dynamic entry point
     graph.set_conditional_entry_point(
         route,
         {
@@ -38,6 +50,7 @@ def build_graph():
         }
     )
 
+    # ReAct loop
     graph.add_conditional_edges(
         "search",
         should_continue,

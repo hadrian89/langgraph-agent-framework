@@ -1,11 +1,24 @@
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 
+provider = TracerProvider()
+trace.set_tracer_provider(provider)
 
-trace.set_tracer_provider(TracerProvider())
+# console debug
+provider.add_span_processor(
+    BatchSpanProcessor(ConsoleSpanExporter())
+)
 
-tracer = trace.get_tracer(__name__)
+# OTLP exporter
+otlp_exporter = OTLPSpanExporter(
+    endpoint="http://localhost:4317",
+    insecure=True
+)
 
-span_processor = BatchSpanProcessor(ConsoleSpanExporter())
-trace.get_tracer_provider().add_span_processor(span_processor)
+provider.add_span_processor(
+    BatchSpanProcessor(otlp_exporter)
+)
+
+tracer = trace.get_tracer("agent-platform")
