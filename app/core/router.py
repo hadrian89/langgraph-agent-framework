@@ -10,26 +10,44 @@ def route(state):
 
     query = state["messages"][-1].content
 
-    agents = AgentRegistry.list_agents()
+    agents = AgentRegistry.get_metadata()
+
+    agent_descriptions = "\n".join(
+        [f"{name}: {desc}" for name, desc in agents.items()]
+    )
 
     prompt = f"""
-You are a router for an AI agent system.
+You are a routing engine for an AI agent platform.
 
-Available agents:
-{agents}
+Agents and capabilities:
 
-User query:
+{agent_descriptions}
+
+Rules:
+- Choose the best agent for the request
+- Return JSON ONLY
+- Do not explain
+
+Example:
+{{"agent": "search"}}
+
+User request:
 {query}
-
-Return ONLY the best agent name.
 """
 
     response = llm.invoke(prompt)
 
-    agent = response.content.strip()
+    text = response.content.strip()
+
+    try:
+        import json
+        agent = json.loads(text)["agent"]
+    except Exception:
+        agent = "search"
 
     if agent not in agents:
-        agent = agents[0]
+        agent = "search"
+        
 
     print(f"Routed to agent: {agent}")
 

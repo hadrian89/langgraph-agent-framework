@@ -13,4 +13,4 @@ def weather_agent(state):
     return {"messages": [response]}
 
 
-AgentRegistry.register("weather", weather_agent)
+AgentRegistry.register("weather", weather_agent,"Handles weather related questions and information")

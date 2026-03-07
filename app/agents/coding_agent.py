@@ -12,4 +12,4 @@ def coding_agent(state):
     return {"messages": [response]}
 
 
-AgentRegistry.register("coding", coding_agent)
+AgentRegistry.register("coding", coding_agent,"Handles programming, algorithms, debugging, and code generation")

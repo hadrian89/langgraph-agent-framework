@@ -20,4 +20,4 @@ def search_agent(state):
     return {"messages": [response]}
 
 
-AgentRegistry.register("search", search_agent)
+AgentRegistry.register("search", search_agent,"Answers factual questions, world knowledge, and current information")
