@@ -1,12 +1,8 @@
 from langgraph.graph import StateGraph, END
-from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import ToolNode
+from langchain_openai import ChatOpenAI
 from state import AgentState
 from tools import tools
-from langgraph.checkpoint.memory import MemorySaver
-
-memory = MemorySaver()
-
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
@@ -22,8 +18,8 @@ def agent_node(state: AgentState):
 
 
 def should_continue(state: AgentState):
-    messages = state["messages"]
-    last_message = messages[-1]
+
+    last_message = state["messages"][-1]
 
     if last_message.tool_calls:
         return "tools"

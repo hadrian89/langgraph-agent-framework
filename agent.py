@@ -6,17 +6,18 @@ from graph import build_graph
 
 graph = build_graph()
 
-print("\nLangGraph Agent Ready (type 'exit' to quit)\n")
+print("\nMulti-Agent System Ready\n")
 
 while True:
 
-    user_input = input("You: ")
+    query = input("You: ")
 
-    if user_input.lower() == "exit":
+    if query == "exit":
         break
 
     result = graph.invoke(
-        {"messages": [HumanMessage(content=user_input)]}
+        {"messages": [HumanMessage(content=query)]}
     )
+    print(result)
 
-    print("Agent:", result["messages"][-1].content)
+    print("\nAgent:", result["messages"][-1].content or "[tool executed]")
