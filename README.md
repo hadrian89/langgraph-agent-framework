@@ -103,10 +103,10 @@ Register the agent: AgentRegistry.register("weather", weather_agent)
 The system automatically adds it to the graph.
 
 ---
-
-## License
-
-MIT
+# Pre commit hooks
+```
+pre-commit run --all-files
+```
 
 # To run with agentcore
 ```
@@ -134,6 +134,10 @@ with session
 ```
 agentcore invoke '{"prompt": "How many he became PM?",session_id:"f000cd93-4ef8-4d9a-8bf8-fd9654718e2f"}'
 ```
+
+## License
+
+MIT
 <!-- https://bedrock-agentcore.eu-west-2.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aeu-west-2%3A317112499880%3Aruntime%2Fagentaiframework-XtFV52GIZk/invocations?qualifier=DEFAULT -->
 
 <!-- https://eu-west-2s88k6royu.auth.eu-west-2.amazoncognito.com/login?client_id=1mfp4tlnvss65l0c7rj8nvm0kf&redirect_uri=https://d84l1y8p4kdic.cloudfront.net&response_type=code&scope=email+openid+phone -->
