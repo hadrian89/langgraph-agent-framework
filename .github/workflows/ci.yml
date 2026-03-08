@@ -2,7 +2,12 @@ name: Agent CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
+    paths:
+      - "app/**"
+      - "Dockerfile"
+      - "pyproject.toml"
+      - ".github/workflows/**"
   pull_request:
     branches: [main]
 
@@ -85,8 +90,13 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e .
+      
+      - name: Generate version tag
+        run: |
+          echo "VERSION=${GITHUB_SHA::7}" >> $GITHUB_ENV
+          echo "Agent version: ${GITHUB_SHA::7}"
 
       - name: Deploy AgentCore Runtime
         run: |
           source .venv/bin/activate
-          agentcore deploy
+          agentcore deploy --image-tag ${VERSION}
