@@ -17,10 +17,12 @@ graph = build_graph("agentcore")  # Memory management handled below
 
 
 @app.entrypoint
-async def handle_request(payload):
+async def handle_request(payload, context):
     # AgentCore automatically provides session context
     user_input = payload.get("prompt")
-    session_id = get_or_create_session(payload.get("session_id"))
+    session_id = payload.get("session_id") or context.session_id
+    session_id = get_or_create_session(session_id)
+    print(f"Received request: {user_input} with session_id: {session_id}")
     if not validate_input(user_input):
         return {"response": "Your request violates safety policies."}
 
