@@ -14,3 +14,4 @@ __pycache__
 deployment-log/
 .DS_Store
 app/agents/__pycache__/
+README.md
