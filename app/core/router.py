@@ -1,5 +1,7 @@
-from app.core.llm_gateway import LLMGateway
+import json
+
 from app.core.agent_registry import AgentRegistry
+from app.core.llm_gateway import LLMGateway
 from app.core.tracing import trace_node
 
 llm = LLMGateway.get_model()
@@ -12,9 +14,7 @@ def route(state):
 
     agents = AgentRegistry.get_metadata()
 
-    agent_descriptions = "\n".join(
-        [f"{name}: {desc}" for name, desc in agents.items()]
-    )
+    agent_descriptions = "\n".join([f"{name}: {desc}" for name, desc in agents.items()])
 
     prompt = f"""
 You are a routing engine for an AI agent platform.
@@ -40,14 +40,13 @@ User request:
     text = response.content.strip()
 
     try:
-        import json
+
         agent = json.loads(text)["agent"]
     except Exception:
         agent = "search"
 
     if agent not in agents:
         agent = "search"
-        
 
     print(f"Routed to agent: {agent}")
 

@@ -1,8 +1,8 @@
-from app.core.tracing import trace_node
 from app.core.agent_registry import AgentRegistry
 from app.core.llm_gateway import LLMGateway
-from app.core.tools_registry import ToolRegistry
 from app.core.logging import logger
+from app.core.tools_registry import ToolRegistry
+from app.core.tracing import trace_node
 
 llm = LLMGateway.get_model()
 tools = ToolRegistry.get_tools()
@@ -20,4 +20,8 @@ def search_agent(state):
     return {"messages": [response]}
 
 
-AgentRegistry.register("search", search_agent,"Answers factual questions, world knowledge, and current information")
+AgentRegistry.register(
+    "search",
+    search_agent,
+    "Answers factual questions, world knowledge, and current information",
+)

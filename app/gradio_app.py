@@ -1,11 +1,13 @@
-import requests
-import gradio as gr
 import time
+
+import gradio as gr
+import requests
 
 STREAM_API_URL = "http://localhost:8000/chat/stream"
 AGENTCORE_API_URL = "http://localhost:8080/invocations"
-TRIGGER_TYPE = "agentcore" # or "agentcore"
+TRIGGER_TYPE = "agentcore"  # or "agentcore"
 UI_SESSION_ID = ""
+
 
 def format_code(text):
 
@@ -14,6 +16,7 @@ def format_code(text):
         return f"```python\n{text}\n```"
 
     return text
+
 
 def stream_agent(message):
 
@@ -36,22 +39,22 @@ def stream_agent(message):
                 partial += token + " "
 
                 yield partial
-                
+
 
 def trigger_agent(message):
     global UI_SESSION_ID
     payload = {
         "prompt": message,
         "token": "YOUR_JWT_TOKEN_HERE",
-        "session_id": UI_SESSION_ID
+        "session_id": UI_SESSION_ID,
     }
     print(f"Sending payload to AgentCore: {payload}")
     response = requests.post(AGENTCORE_API_URL, json=payload)
-    
+
     if response.status_code == 200:
         print(f"AgentCore response: {response.json()}")
-        
-        UI_SESSION_ID = response.json().get("session_id","")
+
+        UI_SESSION_ID = response.json().get("session_id", "")
         return response.json().get("response", "No response field in JSON")
     else:
         return f"Error: {response.status_code} - {response.text}"
@@ -67,7 +70,6 @@ def respond(message, history):
 
     history.append(assistant_msg)
 
-    
     if TRIGGER_TYPE == "stream":
         for partial in stream_agent(message):
 
@@ -75,15 +77,14 @@ def respond(message, history):
 
             yield history, ""
     else:
-   
+
         agresp = trigger_agent(message)
         assistant_msg["content"] = format_code(agresp)
         yield history, ""
-    
+
     latency = round(time.time() - start, 2)
 
     assistant_msg["content"] += f"\n\n⏱️ Response time: {latency}s"
-    
 
     yield history, ""
 
@@ -94,7 +95,7 @@ with gr.Blocks(
 #chatbot {
     height: 700px;
 }
-"""
+""",
 ) as demo:
 
     gr.Markdown("Agent Framework Demo - Powered by LangGraph and Bedrock AgentCore")
@@ -105,42 +106,26 @@ with gr.Blocks(
 
     with gr.Row():
 
-        msg = gr.Textbox(
-            placeholder="Ask something...",
-            scale=8,
-            container=False
-        )
+        msg = gr.Textbox(placeholder="Ask something...", scale=8, container=False)
 
         send = gr.Button("Send", scale=1)
 
     clear = gr.Button("Clear Chat")
 
-    msg.submit(
-        respond,
-        [msg, chatbot],
-        [chatbot, msg]
-    )
+    msg.submit(respond, [msg, chatbot], [chatbot, msg])
 
-    send.click(
-        respond,
-        [msg, chatbot],
-        [chatbot, msg]
-    )
+    send.click(respond, [msg, chatbot], [chatbot, msg])
 
-    clear.click(
-        lambda: [],
-        None,
-        chatbot
-    )
+    clear.click(lambda: [], None, chatbot)
 
     gr.Examples(
         examples=[
             "Who is PM of India?",
             "Write a python fibonacci program",
             "Explain LangGraph in simple terms",
-            "Latest AI news"
+            "Latest AI news",
         ],
-        inputs=msg
+        inputs=msg,
     )
 
 demo.launch()

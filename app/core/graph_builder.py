@@ -1,12 +1,11 @@
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
-
-from app.state import AgentState
-from app.core.agent_registry import AgentRegistry
-from app.core.tools_registry import ToolRegistry
-from app.core.router import route
 from langgraph_checkpoint_aws import AgentCoreMemorySaver
 
+from app.core.agent_registry import AgentRegistry
+from app.core.router import route
+from app.core.tools_registry import ToolRegistry
+from app.state import AgentState
 
 REGION = "eu-west-2"
 MEMORY_ID = "agentframework_mem-0kn5PJ2mTf"
@@ -27,7 +26,6 @@ def build_graph(endpoint_type):
     if endpoint_type == "agentcore":
         checkpointer = AgentCoreMemorySaver(MEMORY_ID, region_name=REGION)
 
-    
     graph = StateGraph(AgentState)
 
     tools = ToolRegistry.get_tools()
@@ -57,10 +55,7 @@ def build_graph(endpoint_type):
     for name in agents.keys():
         graph.add_edge("tools", name)
 
-    graph.set_conditional_entry_point(
-        route,
-        {name: name for name in agents.keys()}
-    )
+    graph.set_conditional_entry_point(route, {name: name for name in agents.keys()})
     if endpoint_type == "agentcore":
         return graph.compile(checkpointer=checkpointer)
     return graph.compile()

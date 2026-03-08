@@ -1,6 +1,5 @@
 import re
 
-
 BLOCKED_PATTERNS = [
     r"ignore previous instructions",
     r"system prompt",
@@ -17,6 +16,7 @@ def validate_input(query: str):
             return False
 
     return True
+
 
 BLOCKED_OUTPUT = [
     "OPENAI_API_KEY",
