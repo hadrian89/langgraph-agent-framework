@@ -1,6 +1,6 @@
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
-from app.core.graph_builder import build_graph
 from langchain_core.messages import HumanMessage
+from app.core.graph_builder import build_graph
 from app.core.agent_loader import load_agents
 from app.core.tool_loader import load_tools
 from app.core.guardrails import validate_input, validate_output

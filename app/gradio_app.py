@@ -2,7 +2,10 @@ import requests
 import gradio as gr
 import time
 
-API_URL = "http://localhost:8000/chat/stream"
+STREAM_API_URL = "http://localhost:8000/chat/stream"
+AGENTCORE_API_URL = "http://localhost:8080/invocations"
+TRIGGER_TYPE = "agentcore" # or "agentcore"
+UI_SESSION_ID = ""
 
 def format_code(text):
 
@@ -14,7 +17,7 @@ def format_code(text):
 
 def stream_agent(message):
 
-    url = f"{API_URL}?query={message}"
+    url = f"{STREAM_API_URL}?query={message}"
 
     response = requests.get(url, stream=True)
 
@@ -33,6 +36,25 @@ def stream_agent(message):
                 partial += token + " "
 
                 yield partial
+                
+
+def trigger_agent(message):
+    global UI_SESSION_ID
+    payload = {
+        "prompt": message,
+        "token": "YOUR_JWT_TOKEN_HERE",
+        "session_id": UI_SESSION_ID
+    }
+    print(f"Sending payload to AgentCore: {payload}")
+    response = requests.post(AGENTCORE_API_URL, json=payload)
+    
+    if response.status_code == 200:
+        print(f"AgentCore response: {response.json()}")
+        
+        UI_SESSION_ID = response.json().get("session_id","")
+        return response.json().get("response", "No response field in JSON")
+    else:
+        return f"Error: {response.status_code} - {response.text}"
 
 
 def respond(message, history):
@@ -45,9 +67,17 @@ def respond(message, history):
 
     history.append(assistant_msg)
 
-    for partial in stream_agent(message):
+    
+    if TRIGGER_TYPE == "stream":
+        for partial in stream_agent(message):
 
-        assistant_msg["content"] = format_code(partial)
+            assistant_msg["content"] = format_code(partial)
+
+            yield history, ""
+    else:
+   
+        agresp = trigger_agent(message)
+        assistant_msg["content"] = format_code(agresp)
         yield history, ""
     
     latency = round(time.time() - start, 2)
@@ -62,12 +92,12 @@ with gr.Blocks(
     theme=gr.themes.Soft(),
     css="""
 #chatbot {
-    height: 600px;
+    height: 700px;
 }
 """
 ) as demo:
 
-    gr.Markdown("# 🤖 LangGraph Agent Platform")
+    gr.Markdown("Agent Framework Demo - Powered by LangGraph and Bedrock AgentCore")
 
     chatbot = gr.Chatbot(
         elem_id="chatbot",
