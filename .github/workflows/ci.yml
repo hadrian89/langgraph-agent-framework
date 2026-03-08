@@ -99,4 +99,8 @@ jobs:
       - name: Deploy AgentCore Runtime
         run: |
           source .venv/bin/activate
-          agentcore deploy --image-tag ${VERSION}
+          agentcore deploy --image-tag ${VERSION} \
+          --env OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+          --env LLM_PROVIDER=openai \
+          --env OPENAI_MODEL=gpt-4o-mini \
+          --env OLLAMA_MODEL=llama3.2
