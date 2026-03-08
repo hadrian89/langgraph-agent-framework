@@ -48,4 +48,9 @@ jobs:
       - name: Validate LangGraph graph build
         run: |
           source .venv/bin/activate
-          python -c "from app.core.graph_builder import build_graph; build_graph("")"
+          python -c "from app.core.graph_builder import build_graph; build_graph('fastapi')"
+      
+      - name: Validate agents registry
+        run: |
+          source .venv/bin/activate
+          python -c "from app.core.agent_registry import AgentRegistry; print(AgentRegistry.all_agents())"

@@ -22,7 +22,7 @@ def should_continue(state):
     return END
 
 
-def build_graph(endpoint_type):
+def build_graph(endpoint_type="fastapi"):
     if endpoint_type == "agentcore":
         checkpointer = AgentCoreMemorySaver(MEMORY_ID, region_name=REGION)
 
