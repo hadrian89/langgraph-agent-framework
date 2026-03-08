@@ -15,5 +15,6 @@ __pycache__
 .agentcore.json
 .agentcore_identity_cognito_user.json
 .agentcore_identity_user.env
-.bedrock_agentcore/myagentwithidentity/
+.bedrock_agentcore/
 deployment-log/
+.DS_Store
