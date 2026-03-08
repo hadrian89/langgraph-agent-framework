@@ -1,9 +1,6 @@
 .env
 .ipynb_checkpoints
 .langgraph-data
-env1
-env1/
-env1/*
 .venv
 .venv/
 .venv/*
