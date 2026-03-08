@@ -4,11 +4,10 @@ from app.core.agent_registry import AgentRegistry
 from app.core.llm_gateway import LLMGateway
 from app.core.tracing import trace_node
 
-llm = LLMGateway.get_model()
-
 
 @trace_node("router")
 def route(state):
+    llm = LLMGateway.get_model()
 
     query = state["messages"][-1].content
 

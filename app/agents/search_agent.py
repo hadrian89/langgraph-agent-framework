@@ -4,14 +4,14 @@ from app.core.logging import logger
 from app.core.tools_registry import ToolRegistry
 from app.core.tracing import trace_node
 
-llm = LLMGateway.get_model()
-tools = ToolRegistry.get_tools()
-
-llm_with_tools = llm.bind_tools(tools)
-
 
 @trace_node("search_agent")
 def search_agent(state):
+    llm = LLMGateway.get_model()
+    tools = ToolRegistry.get_tools()
+
+    llm_with_tools = llm.bind_tools(tools)
+
     logger.info("search_agent invoked")
     messages = state["messages"]
 

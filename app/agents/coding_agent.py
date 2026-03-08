@@ -1,8 +1,6 @@
 from app.core.agent_registry import AgentRegistry
 from app.core.llm_gateway import LLMGateway
 
-llm = LLMGateway.get_model()
-
 SYSTEM_PROMPT = """
 You are a programming assistant.
 
@@ -14,6 +12,7 @@ Rules:
 
 
 def coding_agent(state):
+    llm = LLMGateway.get_model()
 
     response = llm.invoke(state["messages"])
 
