@@ -54,3 +54,38 @@ jobs:
         run: |
           source .venv/bin/activate
           python -c "from app.core.agent_registry import AgentRegistry; print(AgentRegistry.all_agents())"
+
+  deploy-agentcore:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install agent dependencies
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e .
+
+      - name: Deploy AgentCore Runtime
+        run: |
+          source .venv/bin/activate
+          agentcore deploy

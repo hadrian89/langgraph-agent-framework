@@ -1,0 +1,128 @@
+default_agent: myagentwithidentity
+agents:
+  agentaiframework:
+    name: agentaiframework
+    language: python
+    node_version: '20'
+    entrypoint: ./app/agentcore.py
+    deployment_type: container
+    runtime_type: null
+    platform: linux/arm64
+    container_runtime: none
+    source_path: .
+    aws:
+      execution_role: arn:aws:iam::317112499880:role/BedrockAgentCoreExecutionRole
+      execution_role_auto_create: true
+      account: '317112499880'
+      region: eu-west-2
+      ecr_repository: 317112499880.dkr.ecr.eu-west-2.amazonaws.com/agent-framework
+      ecr_auto_create: false
+      s3_path: null
+      s3_auto_create: false
+      network_configuration:
+        network_mode: PUBLIC
+        network_mode_config: null
+      protocol_configuration:
+        server_protocol: HTTP
+      observability:
+        enabled: true
+      lifecycle_configuration:
+        idle_runtime_session_timeout: null
+        max_lifetime: null
+    bedrock_agentcore:
+      agent_id: agentaiframework-XtFV52GIZk
+      agent_arn: arn:aws:bedrock-agentcore:eu-west-2:317112499880:runtime/agentaiframework-XtFV52GIZk
+      agent_session_id: f000cd93-4ef8-4d9a-8bf8-fd9654718e2f
+    codebuild:
+      project_name: bedrock-agentcore-agentaiframework-builder
+      execution_role: arn:aws:iam::317112499880:role/AmazonBedrockAgentCoreSDKCodeBuild-eu-west-2-4441ec1b39
+      source_bucket: bedrock-agentcore-codebuild-sources-317112499880-eu-west-2
+    memory:
+      mode: STM_AND_LTM
+      memory_id: agentframework_mem-0kn5PJ2mTf
+      memory_arn: null
+      memory_name: agentaiframework_memory
+      event_expiry_days: 30
+      first_invoke_memory_check_done: false
+      was_created_by_toolkit: false
+    identity:
+      credential_providers: []
+      workload: null
+    aws_jwt:
+      enabled: false
+      audiences: []
+      signing_algorithm: ES384
+      issuer_url: null
+      duration_seconds: 300
+    authorizer_configuration: null
+    request_header_configuration: null
+    oauth_configuration: null
+    api_key_env_var_name: null
+    api_key_credential_provider_name: null
+    is_generated_by_agentcore_create: false
+  myagentwithidentity:
+    name: myagentwithidentity
+    language: python
+    node_version: '20'
+    entrypoint: ./app/agentcore.py
+    deployment_type: container
+    runtime_type: null
+    platform: linux/arm64
+    container_runtime: none
+    source_path: .
+    aws:
+      execution_role: arn:aws:iam::317112499880:role/BedrockAgentCoreExecutionRole
+      execution_role_auto_create: true
+      account: '317112499880'
+      region: eu-west-2
+      ecr_repository: 317112499880.dkr.ecr.eu-west-2.amazonaws.com/agent-framework
+      ecr_auto_create: false
+      s3_path: null
+      s3_auto_create: false
+      network_configuration:
+        network_mode: PUBLIC
+        network_mode_config: null
+      protocol_configuration:
+        server_protocol: HTTP
+      observability:
+        enabled: true
+      lifecycle_configuration:
+        idle_runtime_session_timeout: null
+        max_lifetime: null
+    bedrock_agentcore:
+      agent_id: myagentwithidentity-beZKNC5OaQ
+      agent_arn: arn:aws:bedrock-agentcore:eu-west-2:317112499880:runtime/myagentwithidentity-beZKNC5OaQ
+      agent_session_id: null
+    codebuild:
+      project_name: bedrock-agentcore-myagentwithidentity-builder
+      execution_role: arn:aws:iam::317112499880:role/AmazonBedrockAgentCoreSDKCodeBuild-eu-west-2-b0f034eda7
+      source_bucket: bedrock-agentcore-codebuild-sources-317112499880-eu-west-2
+    memory:
+      mode: STM_AND_LTM
+      memory_id: agentframework_mem-0kn5PJ2mTf
+      memory_arn: null
+      memory_name: myagentwithidentity_memory
+      event_expiry_days: 30
+      first_invoke_memory_check_done: false
+      was_created_by_toolkit: false
+    identity:
+      credential_providers: []
+      workload: null
+    aws_jwt:
+      enabled: false
+      audiences: []
+      signing_algorithm: ES384
+      issuer_url: null
+      duration_seconds: 300
+    authorizer_configuration:
+      customJWTAuthorizer:
+        discoveryUrl: https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_3JxBVyqWd/.well-known/openid-configuration
+        allowedClients:
+        - 1ol7qbdnmb7d51jt8uqrpdql8l
+    request_header_configuration: null
+    oauth_configuration:
+      workload_name: workload-d2ecbd2e
+      userId: null
+    api_key_env_var_name: null
+    api_key_credential_provider_name: null
+    is_generated_by_agentcore_create: false
