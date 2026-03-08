@@ -12,6 +12,7 @@ __pycache__
 */*/__pycache__/
 */*/*/__pycache__/
 .bedrock_agentcore.yaml
+README.md
 .agentcore.json
 .agentcore_identity_cognito_user.json
 .agentcore_identity_user.env
