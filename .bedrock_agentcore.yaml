@@ -92,7 +92,7 @@ agents:
     bedrock_agentcore:
       agent_id: myagentwithidentity-beZKNC5OaQ
       agent_arn: arn:aws:bedrock-agentcore:eu-west-2:317112499880:runtime/myagentwithidentity-beZKNC5OaQ
-      agent_session_id: demo_session_DCAD7C669FA84CE78CE4F3A2ADA0EAEB
+      agent_session_id: demo_session_D9F757C9E7C5414D897EDF273BA6DA0C
     codebuild:
       project_name: bedrock-agentcore-myagentwithidentity-builder
       execution_role: arn:aws:iam::317112499880:role/AmazonBedrockAgentCoreSDKCodeBuild-eu-west-2-b0f034eda7

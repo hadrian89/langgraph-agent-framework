@@ -113,6 +113,7 @@ pre-commit run --all-files
 agentcore dev
 ```
 ## To test with agentcore
+curl command
 ```
 curl --header "Content-Type: application/json" \
   --request POST \
@@ -126,13 +127,18 @@ curl --header "Content-Type: application/json" \
   --data '{"prompt":"how many times he become PM?","session_id": "a8089a3f-6e2d-4088-8ebb-cade809d1dfe"}' \
   http://localhost:8081/invocations
 ```
-or
+---
+with Agentcore invoke command
 ```
-agentcore invoke '{"prompt": "Who is PM of India?"}'
+agentcore invoke '{"prompt": "who is PM of India?"}' \
+  --bearer-token "$TOKEN" \
+  --session-id "demo_session_$(uuidgen | tr -d '-')"          
 ```
 with session
 ```
-agentcore invoke '{"prompt": "How many he became PM?",session_id:"f000cd93-4ef8-4d9a-8bf8-fd9654718e2f"}'
+agentcore invoke '{"prompt": "how many times he became a PM?"}' \                     
+  --bearer-token "$TOKEN" \                                   
+  --session-id "demo_session_D9F757C9E7C5414D897EDF273BA6DA0C"
 ```
 
 ## License
@@ -140,9 +146,6 @@ agentcore invoke '{"prompt": "How many he became PM?",session_id:"f000cd93-4ef8-
 MIT
 <!-- https://bedrock-agentcore.eu-west-2.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aeu-west-2%3A317112499880%3Aruntime%2Fagentaiframework-XtFV52GIZk/invocations?qualifier=DEFAULT -->
 
-<!-- https://eu-west-2s88k6royu.auth.eu-west-2.amazoncognito.com/login?client_id=1mfp4tlnvss65l0c7rj8nvm0kf&redirect_uri=https://d84l1y8p4kdic.cloudfront.net&response_type=code&scope=email+openid+phone -->
-
-<!-- https://agentcore-quickstart-f0ywx.auth.eu-west-2.amazoncognito.com/login?client_id=vmd10norfjrplc8mqf800uoe6&response_type=code&scope=email+openid+phone&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fcallback -->
 <!-- agent with identity setup
 # 1. Create Cognito pools
 agentcore identity setup-cognito
@@ -181,6 +184,26 @@ agentcore deploy
 TOKEN=$(agentcore identity get-cognito-inbound-token)
 
 # 8. Invoke with JWT authentication
-agentcore invoke '{"prompt": "who is president of Spain?"}' \
-  --bearer-token "" \
-  --session-id "demo_session_$(uuidgen | tr -d '-')" -->
+agentcore invoke '{"prompt": "who is PM of India?"}' \
+  --bearer-token "$TOKEN" \
+  --session-id "demo_session_$(uuidgen | tr -d '-')" 
+  
+  
+agentcore invoke '{"prompt": "how many times he became a PM?"}' \
+  --bearer-token "$TOKEN" \
+  --session-id "demo_session_D9F757C9E7C5414D897EDF273BA6DA0C"
+
+-->
+
+<!-- To generate a token use below
+
+export $(grep -v '^#' .agentcore_identity_user.env | xargs)
+
+TOKEN=$(agentcore identity get-cognito-inbound-token)
+
+agentcore deploy \
+          --env OPENAI_API_KEY=<OPENAI_API_KEY> \
+          --env LLM_PROVIDER=openai \
+          --env OPENAI_MODEL=gpt-4o-mini \
+          --env OLLAMA_MODEL=llama3.2
+-->
