@@ -9,3 +9,7 @@ class ToolRegistry:
     @classmethod
     def get_tools(cls):
         return list(cls._tools.values())
+
+    @classmethod
+    def list_tools(cls):
+        return list(cls._tools.keys())

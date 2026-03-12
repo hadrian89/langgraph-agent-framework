@@ -29,7 +29,6 @@ def build_graph(endpoint_type="fastapi"):
     graph = StateGraph(AgentState)
 
     tools = ToolRegistry.get_tools()
-
     # add tool node
     tool_node = ToolNode(tools)
     graph.add_node("tools", tool_node)
@@ -37,7 +36,7 @@ def build_graph(endpoint_type="fastapi"):
     # dynamically register all agents
     agents = AgentRegistry.all_agents()
     print("Agents in graph:", AgentRegistry.list_agents())
-    print("Graph agents:", agents.keys())
+    print("Tools in graph:", ToolRegistry.list_tools())
     for name, agent in agents.items():
 
         graph.add_node(name, agent)

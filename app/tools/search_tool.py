@@ -40,6 +40,10 @@ def guarded_search(query):
     if isinstance(query, dict) and "value" in query:
         query = query["value"]
 
+    # Ensure query is a string before passing to search_guard
+    if not isinstance(query, str):
+        raise ValueError("Query must be a string")
+
     query = search_guard(query)
 
     return search_tool.run(query)

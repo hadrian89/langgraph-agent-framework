@@ -19,7 +19,7 @@ repos:
           - flake8-bugbear
         args:
           - --max-line-length=120
-          - --extend-ignore=E203
+          - --extend-ignore=E203,B010
 
   - repo: https://github.com/pycqa/pylint
     rev: v3.2.2

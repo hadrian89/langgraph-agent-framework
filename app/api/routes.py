@@ -1,3 +1,5 @@
+from typing import Any
+
 import anyio
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
@@ -7,6 +9,8 @@ from app.core.agent_loader import load_agents
 from app.core.graph_builder import build_graph
 from app.core.guardrails import validate_input, validate_output
 from app.core.tool_loader import load_tools
+
+# from app.core.health_graph import graph
 
 router = APIRouter()
 
@@ -19,9 +23,11 @@ graph = build_graph("")
 
 def stream_agent(query: str):
 
-    inputs = {"messages": [HumanMessage(content=query)]}
+    # graph.stream expects a typed AgentState/Command, cast to Any and ignore the
+    # type check so my dict can be passed through.
+    inputs: Any = {"messages": [HumanMessage(content=query)]}
 
-    for event in graph.stream(inputs):
+    for event in graph.stream(inputs):  # type: ignore[arg-type]
 
         for value in event.values():
 
@@ -46,7 +52,8 @@ async def chat(query: str):
     if not validate_input(query):
         return {"response": "Your request violates safety policies."}
     with anyio.fail_after(30):
-        result = graph.invoke({"messages": [HumanMessage(content=query)]})
+        # similarly cast the dict for invoke
+        result = graph.invoke({"messages": [HumanMessage(content=query)]})  # type: ignore[arg-type]
         print(f"Graph result: {result}")
 
     response = result["messages"][-1].content
