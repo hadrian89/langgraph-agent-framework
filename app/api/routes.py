@@ -55,9 +55,8 @@ async def chat(query: str):
         return {"response": "Your request violates safety policies."}
     with anyio.fail_after(30):
         # similarly cast the dict for invoke
-        result = graph.invoke(
-            {"messages": [HumanMessage(content=query)], "user_id": user_id}  # temporary
-        )  # type: ignore[arg-type]
+        inputs: Any = {"messages": [HumanMessage(content=query)], "user_id": user_id}
+        result = graph.invoke(inputs)  # type: ignore[arg-type]
         print(f"Graph result: {result}")
 
     response = result["messages"][-1].content
