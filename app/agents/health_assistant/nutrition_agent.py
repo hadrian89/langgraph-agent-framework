@@ -53,4 +53,8 @@ class NutritionAgent:
         return {"messages": [AIMessage(content=response.content)]}
 
 
-AgentRegistry.register("health_assistant.nutrition", NutritionAgent(), SYSTEM_PROMPT)
+AgentRegistry.register(
+    "health_assistant.nutrition",
+    NutritionAgent(),
+    "Handles diet advice, meal suggestions, nutrition planning",
+)

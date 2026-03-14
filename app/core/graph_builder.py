@@ -5,7 +5,7 @@ from langgraph_checkpoint_aws import AgentCoreMemorySaver
 from app.core.agent_registry import AgentRegistry
 from app.core.router import route
 from app.core.tools_registry import ToolRegistry
-from app.state import AgentState
+from app.state.health_state import HealthState
 
 REGION = "eu-west-2"
 MEMORY_ID = "agentframework_mem-0kn5PJ2mTf"
@@ -26,7 +26,7 @@ def build_graph(endpoint_type="fastapi"):
     if endpoint_type == "agentcore":
         checkpointer = AgentCoreMemorySaver(MEMORY_ID, region_name=REGION)
 
-    graph = StateGraph(AgentState)
+    graph = StateGraph(HealthState)
 
     tools = ToolRegistry.get_tools()
     # add tool node

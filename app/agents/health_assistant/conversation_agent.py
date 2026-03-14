@@ -44,4 +44,8 @@ class ConversationAgent:
         return self.run(state)
 
 
-AgentRegistry.register("health_assistant.conversation", ConversationAgent(), SYSTEM_PROMPT)
+AgentRegistry.register(
+    "health_assistant.conversation",
+    ConversationAgent(),
+    "General health questions and conversation",
+)

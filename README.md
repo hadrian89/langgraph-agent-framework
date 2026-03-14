@@ -207,3 +207,5 @@ agentcore deploy \
           --env OPENAI_MODEL=gpt-4o-mini \
           --env OLLAMA_MODEL=llama3.2
 -->
+
+<!-- https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23TZ9T&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fredirect&scope=activity+nutrition+heartrate+location+nutrition+profile+settings+sleep+social+weight&state=d370sPgd1tmpXXbiyAqrmgBYN6UwGD -->

@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
 from langchain_core.messages import HumanMessage
 
@@ -37,7 +39,7 @@ async def handle_request(payload, context):
         "messages": [HumanMessage(content=user_input)],
     }
     # Invoke your existing agent logic
-    result = await graph.ainvoke(initial_state, config=config)
+    result = await graph.ainvoke(cast(Any, initial_state), config=cast(Any, config))
     print("Final response:", result)
     resp = result["messages"][-1].content
     if not validate_output(resp):

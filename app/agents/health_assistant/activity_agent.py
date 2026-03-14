@@ -46,4 +46,8 @@ class ActivityAgent:
         return {"messages": [AIMessage(content=response.content)]}
 
 
-AgentRegistry.register("health_assistant.activity", ActivityAgent(), SYSTEM_PROMPT)
+AgentRegistry.register(
+    "health_assistant.activity",
+    ActivityAgent(),
+    "Handles fitness advice, steps, walking, exercise recommendations",
+)

@@ -54,4 +54,8 @@ class SleepAgent:
         return self.run(state)
 
 
-AgentRegistry.register("health_assistant.sleep", SleepAgent(), SYSTEM_PROMPT)
+AgentRegistry.register(
+    "health_assistant.sleep",
+    SleepAgent(),
+    "Handles sleep analysis, sleep advice, insomnia, fatigue",
+)

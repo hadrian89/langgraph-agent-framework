@@ -49,11 +49,15 @@ async def chat_stream(query: str):
 
 @router.post("/chat")
 async def chat(query: str):
+    user_id = "BXZPNX"  # get_user_from_session(session_id)
+
     if not validate_input(query):
         return {"response": "Your request violates safety policies."}
     with anyio.fail_after(30):
         # similarly cast the dict for invoke
-        result = graph.invoke({"messages": [HumanMessage(content=query)]})  # type: ignore[arg-type]
+        result = graph.invoke(
+            {"messages": [HumanMessage(content=query)], "user_id": user_id}  # temporary
+        )  # type: ignore[arg-type]
         print(f"Graph result: {result}")
 
     response = result["messages"][-1].content
