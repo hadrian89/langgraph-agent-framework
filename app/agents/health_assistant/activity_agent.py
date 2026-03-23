@@ -47,7 +47,7 @@ class ActivityAgent:
 
 
 AgentRegistry.register(
-    "health_assistant.activity",
+    "health_assistant.activity_agent",
     ActivityAgent(),
     "Handles fitness advice, steps, walking, exercise recommendations",
 )

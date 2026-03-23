@@ -54,7 +54,7 @@ class NutritionAgent:
 
 
 AgentRegistry.register(
-    "health_assistant.nutrition",
+    "health_assistant.nutrition_agent",
     NutritionAgent(),
     "Handles diet advice, meal suggestions, nutrition planning",
 )

@@ -55,7 +55,7 @@ class SleepAgent:
 
 
 AgentRegistry.register(
-    "health_assistant.sleep",
+    "health_assistant.sleep_agent",
     SleepAgent(),
     "Handles sleep analysis, sleep advice, insomnia, fatigue",
 )

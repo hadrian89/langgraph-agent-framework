@@ -5,7 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "alembic>=1.18.4",
     "anyio>=4.12.1",
+    "apscheduler>=3.11.2",
     "asyncpg>=0.31.0",
     "bedrock-agentcore>=1.4.3",
     "bedrock-agentcore-starter-toolkit>=0.3.2",
@@ -26,6 +28,7 @@ dependencies = [
     "opentelemetry-exporter-otlp>=1.40.0",
     "opentelemetry-sdk>=1.40.0",
     "psycopg2>=2.9.11",
+    "psycopg2-binary>=2.9.11",
     "pytest>=9.0.2",
     "python-dateutil>=2.9.0.post0",
     "python-dotenv>=1.2.2",

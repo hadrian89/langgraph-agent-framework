@@ -45,7 +45,7 @@ class ConversationAgent:
 
 
 AgentRegistry.register(
-    "health_assistant.conversation",
+    "health_assistant.conversation_agent",
     ConversationAgent(),
     "General health questions and conversation",
 )

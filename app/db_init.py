@@ -4,6 +4,7 @@ import psycopg2
 
 DB_NAME = os.getenv("DB_NAME", "agentic_ai")
 
+
 try:
     conn = psycopg2.connect(
         dbname="agentic_ai", user="postgres", password="postgres", host="localhost"
