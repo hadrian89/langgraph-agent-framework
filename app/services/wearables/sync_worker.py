@@ -63,8 +63,8 @@ def sync_user(
 
     with httpx.Client(timeout=15) as http:
         client = FitbitClient(
-            access_token=token.access_token,
-            refresh_token=token.refresh_token,
+            access_token=token.access_token,  # type: ignore
+            refresh_token=token.refresh_token,  # type: ignore
             http=http,
         )
         try:
@@ -151,15 +151,16 @@ def _sync_heart_rate(client, repo, user_id, target_date):
 def run_daily_sync() -> None:
     """Nightly job — syncs all users with a stored Fitbit token."""
     from app.db.getdb import SessionLocal  # lazy import
-    from app.db.models import WearableToken  # lazy import
+    from app.models.wearable_token import WearableToken  # lazy import
 
     logger.info("Starting daily Fitbit sync")
     target_date = date.today() - timedelta(days=1)
 
     db = SessionLocal()
     try:
+        # Query only the user_id column to get str values directly
         user_ids = [
-            row.user_id for row in db.query(WearableToken).filter_by(provider="fitbit").all()
+            row[0] for row in db.query(WearableToken.user_id).filter_by(provider="fitbit").all()
         ]
     finally:
         db.close()
