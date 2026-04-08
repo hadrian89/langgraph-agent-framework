@@ -1,131 +1,85 @@
+"""
+Gradio demo UI for the LangGraph Agent Platform.
+
+Usage:
+    uv run python app/gradio_app.py
+
+Requires the FastAPI server to be running at http://localhost:8000.
+"""
+
 import time
 
 import gradio as gr
 import requests
 
-STREAM_API_URL = "http://localhost:8000/chat/stream"
-AGENTCORE_API_URL = "http://localhost:8080/invocations"
-TRIGGER_TYPE = "agentcore"  # or "agentcore"
-UI_SESSION_ID = ""
+API_URL = "http://localhost:8000/chat/stream"
+
+_session_id: str = ""
 
 
-def format_code(text):
+def stream_agent(message: str, history: list):
+    global _session_id
 
-    if "def " in text or "import " in text:
+    url = f"{API_URL}?query={requests.utils.quote(message)}"
+    if _session_id:
+        url += f"&session_id={_session_id}"
 
-        return f"```python\n{text}\n```"
-
-    return text
-
-
-def stream_agent(message):
-
-    url = f"{STREAM_API_URL}?query={message}"
-
-    response = requests.get(url, stream=True)
-
-    partial = ""
-
-    for chunk in response.iter_lines():
-
-        if chunk:
-
-            text = chunk.decode()
-
-            if text.startswith("data:"):
-
-                token = text.replace("data:", "").strip()
-
-                partial += token + " "
-
-                yield partial
-
-
-def trigger_agent(message):
-    global UI_SESSION_ID
-    payload = {
-        "prompt": message,
-        "token": "YOUR_JWT_TOKEN_HERE",
-        "session_id": UI_SESSION_ID,
-    }
-    print(f"Sending payload to AgentCore: {payload}")
-    response = requests.post(AGENTCORE_API_URL, json=payload)
-
-    if response.status_code == 200:
-        print(f"AgentCore response: {response.json()}")
-
-        UI_SESSION_ID = response.json().get("session_id", "")
-        return response.json().get("response", "No response field in JSON")
-    else:
-        return f"Error: {response.status_code} - {response.text}"
-
-
-def respond(message, history):
+    history = history + [{"role": "user", "content": message}]
+    history.append({"role": "assistant", "content": ""})
 
     start = time.time()
+    partial = ""
 
-    history.append({"role": "user", "content": message})
+    try:
+        with requests.get(url, stream=True, timeout=30) as resp:
+            # Capture session_id from header for subsequent turns
+            if "X-Session-Id" in resp.headers:
+                _session_id = resp.headers["X-Session-Id"]
 
-    assistant_msg = {"role": "assistant", "content": ""}
-
-    history.append(assistant_msg)
-
-    if TRIGGER_TYPE == "stream":
-        for partial in stream_agent(message):
-
-            assistant_msg["content"] = format_code(partial)
-
-            yield history, ""
-    else:
-
-        agresp = trigger_agent(message)
-        assistant_msg["content"] = format_code(agresp)
+            for chunk in resp.iter_lines():
+                if chunk:
+                    text = chunk.decode()
+                    if text.startswith("data:"):
+                        token = text[5:].strip()
+                        partial += token + " "
+                        history[-1]["content"] = partial
+                        yield history, ""
+    except requests.exceptions.RequestException as exc:
+        history[-1]["content"] = f"Error: {exc}"
         yield history, ""
+        return
 
     latency = round(time.time() - start, 2)
-
-    assistant_msg["content"] += f"\n\n⏱️ Response time: {latency}s"
-
+    history[-1]["content"] = partial.strip() + f"\n\n*{latency}s*"
     yield history, ""
 
 
-with gr.Blocks(
-    theme=gr.themes.Soft(),
-    css="""
-#chatbot {
-    height: 700px;
-}
-""",
-) as demo:
+with gr.Blocks(theme=gr.themes.Soft(), css="#chatbot { height: 600px; }") as demo:
+    gr.Markdown("## LangGraph Agent Platform\nPowered by LangGraph · FastAPI · OpenAI / Ollama")
 
-    gr.Markdown("Agent Framework Demo - Powered by LangGraph and Bedrock AgentCore")
-
-    chatbot = gr.Chatbot(
-        elem_id="chatbot",
-    )
+    chatbot = gr.Chatbot(elem_id="chatbot", type="messages")
 
     with gr.Row():
-
-        msg = gr.Textbox(placeholder="Ask something...", scale=8, container=False)
-
+        msg = gr.Textbox(placeholder="Ask anything...", scale=8, container=False)
         send = gr.Button("Send", scale=1)
 
     clear = gr.Button("Clear Chat")
 
-    msg.submit(respond, [msg, chatbot], [chatbot, msg])
-
-    send.click(respond, [msg, chatbot], [chatbot, msg])
-
-    clear.click(lambda: [], None, chatbot)
-
     gr.Examples(
         examples=[
-            "Who is PM of India?",
-            "Write a python fibonacci program",
+            "Who is the Prime Minister of India?",
+            "What is the weather in London today?",
+            "Write a Python binary search function",
             "Explain LangGraph in simple terms",
-            "Latest AI news",
+            "What is the latest news in AI?",
         ],
         inputs=msg,
     )
 
-demo.launch()
+    msg.submit(stream_agent, [msg, chatbot], [chatbot, msg])
+    send.click(stream_agent, [msg, chatbot], [chatbot, msg])
+    clear.click(lambda: ([], ""), outputs=[chatbot, msg])
+
+
+if __name__ == "__main__":
+    demo.launch()
