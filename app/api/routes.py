@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import anyio
 from fastapi import APIRouter
@@ -8,58 +8,73 @@ from langchain_core.messages import HumanMessage
 from app.core.agent_loader import load_agents
 from app.core.graph_builder import build_graph
 from app.core.guardrails import validate_input, validate_output
+from app.core.session import get_or_create_session
 from app.core.tool_loader import load_tools
-
-# from app.core.health_graph import graph
 
 router = APIRouter()
 
 load_tools()
 load_agents()
+graph = build_graph("fastapi")
 
 
-graph = build_graph("")
+def _make_config(session_id: str) -> dict:
+    return {"configurable": {"thread_id": session_id}}
 
 
-def stream_agent(query: str):
-
-    # graph.stream expects a typed AgentState/Command, cast to Any and ignore the
-    # type check so my dict can be passed through.
+def _stream_agent(query: str, session_id: str):
     inputs: Any = {"messages": [HumanMessage(content=query)]}
+    config = _make_config(session_id)
 
-    for event in graph.stream(inputs):  # type: ignore[arg-type]
-
+    for event in graph.stream(inputs, config=config):  # type: ignore[arg-type]
         for value in event.values():
-
             if "messages" in value:
-
                 message = value["messages"][-1]
-
                 if hasattr(message, "content") and message.content:
-
                     yield f"data: {message.content}\n\n"
 
 
 @router.get("/chat/stream")
-async def chat_stream(query: str):
+async def chat_stream(query: str, session_id: Optional[str] = None):
+    """
+    Stream a response via Server-Sent Events.
+
+    Pass `session_id` to continue an existing conversation thread.
+    A new session ID is returned on the first request; pass it on subsequent
+    calls to maintain memory.
+    """
     if not validate_input(query):
-        return {"response": "Your request violates safety policies."}
-    return StreamingResponse(stream_agent(query), media_type="text/event-stream")
+        return {"error": "Your request violates safety policies."}
+
+    session_id = get_or_create_session(session_id)
+    return StreamingResponse(
+        _stream_agent(query, session_id),
+        media_type="text/event-stream",
+        headers={"X-Session-Id": session_id},
+    )
 
 
 @router.post("/chat")
-async def chat(query: str):
-    user_id = "BXZPNX"  # get_user_from_session(session_id)
+async def chat(query: str, session_id: Optional[str] = None):
+    """
+    Send a message and receive a complete response.
 
+    Pass `session_id` to continue an existing conversation thread.
+    The session ID is echoed back in the response so the client can
+    use it for the next request.
+    """
     if not validate_input(query):
-        return {"response": "Your request violates safety policies."}
+        return {"error": "Your request violates safety policies."}
+
+    session_id = get_or_create_session(session_id)
+    config = _make_config(session_id)
+
     with anyio.fail_after(30):
-        # similarly cast the dict for invoke
-        inputs: Any = {"messages": [HumanMessage(content=query)], "user_id": user_id}
-        result = graph.invoke(inputs)  # type: ignore[arg-type]
-        print(f"Graph result: {result}")
+        inputs: Any = {"messages": [HumanMessage(content=query)]}
+        result = graph.invoke(inputs, config=config)  # type: ignore[arg-type]
 
     response = result["messages"][-1].content
     if not validate_output(response):
         response = "Response blocked due to safety policy."
-    return {"response": response}
+
+    return {"response": response, "session_id": session_id}

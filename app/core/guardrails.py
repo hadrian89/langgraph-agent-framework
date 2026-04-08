@@ -19,18 +19,15 @@ def validate_input(query: str):
 
 
 BLOCKED_OUTPUT = [
-    "OPENAI_API_KEY",
+    "openai_api_key",
     "system prompt",
     "private key",
 ]
 
 
 def validate_output(text: str):
-
     t = text.lower()
-
     for pattern in BLOCKED_OUTPUT:
         if pattern in t:
             return False
-
     return True
