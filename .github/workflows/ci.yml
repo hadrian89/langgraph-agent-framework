@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "app/**"
-      - "Dockerfile"
+      - "tests/**"
       - "pyproject.toml"
       - ".github/workflows/**"
   pull_request:
@@ -27,38 +27,21 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Create virtual environment
-        run: uv venv
-
-      - name: Install dependencies from pyproject
-        run: |
-          source .venv/bin/activate
-          uv pip install -e .
-
-      - name: Install dev tools
-        run: |
-          source .venv/bin/activate
-          uv pip install pre-commit
+      - name: Install dependencies (main + dev)
+        run: uv sync --group dev
 
       - name: Run pre-commit checks
-        run: |
-          source .venv/bin/activate
-          pre-commit run --all-files
+        run: uv run pre-commit run --all-files
 
       - name: Run tests
-        run: |
-          source .venv/bin/activate
-          python -m pytest tests/ -v --tb=short
+        run: uv run pytest tests/ -v --tb=short
 
       - name: Validate agent imports
-        run: |
-          source .venv/bin/activate
-          python -c "import app.main"
+        run: uv run python -c "import app.main"
 
       - name: Validate LangGraph graph build
         run: |
-          source .venv/bin/activate
-          python -c "
+          uv run python -c "
           from app.core.tool_loader import load_tools
           from app.core.agent_loader import load_agents
           from app.core.graph_builder import build_graph
@@ -70,8 +53,7 @@ jobs:
 
       - name: Validate agents and tools registry
         run: |
-          source .venv/bin/activate
-          python -c "
+          uv run python -c "
           from app.core.tool_loader import load_tools
           from app.core.agent_loader import load_agents
           from app.core.agent_registry import AgentRegistry
@@ -109,22 +91,16 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install agent dependencies
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -e .
-      
+      - name: Install dependencies
+        run: uv sync
+
       - name: Generate version tag
-        run: |
-          echo "VERSION=${GITHUB_SHA::7}" >> $GITHUB_ENV
-          echo "Agent version: ${GITHUB_SHA::7}"
+        run: echo "VERSION=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - name: Deploy AgentCore Runtime
         run: |
-          source .venv/bin/activate
-          agentcore deploy --image-tag ${VERSION} \
-          --env OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-          --env LLM_PROVIDER=openai \
-          --env OPENAI_MODEL=gpt-4o-mini \
-          --env OLLAMA_MODEL=llama3.2
+          uv run agentcore deploy --image-tag ${VERSION} \
+            --env OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            --env LLM_PROVIDER=openai \
+            --env OPENAI_MODEL=gpt-4o-mini \
+            --env OLLAMA_MODEL=llama3.2
