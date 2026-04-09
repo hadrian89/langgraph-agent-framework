@@ -192,36 +192,32 @@ Then declare it in any agent that needs it: `tools=["exchange_rate"]`.
 ## Agent Workflow Graph
 
 ```mermaid
----
-config:
-  flowchart:
-    curve: linear
----
-graph TD;
-	__start__([<p>__start__</p>]):::first
-	router(router)
-	tools(tools)
-	coding(coding)
-	search(search)
-	weather(weather)
-	__end__([<p>__end__</p>]):::last
-	__start__ --> router;
-	coding -.-> __end__;
-	coding -.-> tools;
-	router -.-> coding;
-	router -.-> search;
-	router -.-> weather;
-	search -.-> __end__;
-	search -.-> tools;
-	tools -.-> coding;
-	tools -.-> search;
-	tools -.-> weather;
-	weather -.-> __end__;
-	weather -.-> tools;
-	classDef default fill:#f2f0ff,line-height:1.2
-	classDef first fill-opacity:0
-	classDef last fill:#bfb6fc
+graph TD
+    start([__start__]):::first
+    router(router)
+    tools(tools)
+    coding(coding)
+    search(search)
+    weather(weather)
+    finish([__end__]):::last
 
+    start --> router
+    router -.-> coding
+    router -.-> search
+    router -.-> weather
+    coding -.-> tools
+    coding -.-> finish
+    search -.-> tools
+    search -.-> finish
+    weather -.-> tools
+    weather -.-> finish
+    tools -.-> coding
+    tools -.-> search
+    tools -.-> weather
+
+    classDef default fill:#f2f0ff,line-height:1.2
+    classDef first fill-opacity:0
+    classDef last fill:#bfb6fc
 ```
 
 ---
