@@ -86,4 +86,11 @@ def build_graph(endpoint_type: str = "fastapi"):
     logger.info("Graph built with agents: %s", agent_names)
     logger.info("Graph built with tools: %s", ToolRegistry.list_tools())
 
-    return graph.compile(checkpointer=checkpointer)
+    graphs = graph.compile(checkpointer=checkpointer)
+
+    # mermaid = graphs.get_graph().draw_mermaid()
+
+    # with open("graph.mmd", "w") as f:
+    #    f.write(mermaid)
+
+    return graphs

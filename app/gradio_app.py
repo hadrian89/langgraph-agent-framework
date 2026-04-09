@@ -54,10 +54,10 @@ def stream_agent(message: str, history: list):
     yield history, ""
 
 
-with gr.Blocks(theme=gr.themes.Soft(), css="#chatbot { height: 600px; }") as demo:
+with gr.Blocks() as demo:
     gr.Markdown("## LangGraph Agent Platform\nPowered by LangGraph · FastAPI · OpenAI / Ollama")
 
-    chatbot = gr.Chatbot(elem_id="chatbot", type="messages")
+    chatbot = gr.Chatbot(elem_id="chatbot")
 
     with gr.Row():
         msg = gr.Textbox(placeholder="Ask anything...", scale=8, container=False)
@@ -82,4 +82,4 @@ with gr.Blocks(theme=gr.themes.Soft(), css="#chatbot { height: 600px; }") as dem
 
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(theme=gr.themes.Soft())
