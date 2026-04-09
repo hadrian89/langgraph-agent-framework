@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "3128dad3-ebb4-4335-9352-ae075acbf45d",
+		"name": "AgentFramework",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Invoke Agent",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJraWQiOiJXTnFHOFlWQTBwalBNRFZSbXhaTnpqSkJ3Z3dHR3Ftbk12NUhaODFuQXFZPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmNjkyNjIyNC1hMDAxLTcwZjktNjQ1Mi00MDI3ZDcxNWE1YzMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0yLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMl8zSnhCVnlxV2QiLCJjbGllbnRfaWQiOiIxb2w3cWJkbm1iN2Q1MWp0OHVxcnBkcWw4bCIsIm9yaWdpbl9qdGkiOiJlMGU2ZGY4NS04OTNhLTRhYzUtOWUxNC04OTY5NjJjYTExOWIiLCJldmVudF9pZCI6Ijk0NTc2NTUyLTQ4MTMtNDQ0NC05NjU4LTk3YWZkYzJiMTNiOSIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3NzMwNjk3MzcsImV4cCI6MTc3MzA3MzMzNywiaWF0IjoxNzczMDY5NzM3LCJqdGkiOiI0NGZlY2YwYy0zZDJiLTRlYWItOGQ5OC0yZTQ0N2UxNmQ4NmQiLCJ1c2VybmFtZSI6InRlc3R1c2VyLXdkOWU4biJ9.nS6bRR7M-OXhwX2jD8QPHB7HigR_D-wBkQahbExU0Y9yEZrNhKsdETB3XNsTUog7mxnzBbUuYn2Q5-cquwC6upUQmsOCfRTTCJ7F2eyatPIwRhkrL4m_Q-hQp79Wdwr4C2QOeR5T13z42k8CZX1RFPr8gk9SzWTljVS41ahXDofA_tQnDq3R7-T-h3KlG1m51ZYj0eat9WgoMorZwus_KvN2zzmCIDLS89xP6dxlpN_-4uGO4mhdbt4_QQrEtN1eWToozS3XQP1YroNu_qopEPe5hny2zqp9YCbBI2yzdNCr-QRQ5N-aptgarqjQwoHqE4z8eNweMKgVpCViMSwAmw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"prompt\":\"who is PM of India\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://bedrock-agentcore.eu-west-2.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aeu-west-2%3A317112499880%3Aruntime%2Fmyagentwithidentity-beZKNC5OaQ/invocations?qualifier=DEFAULT",
+					"protocol": "https",
+					"host": [
+						"bedrock-agentcore",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"runtimes",
+						"arn%3Aaws%3Abedrock-agentcore%3Aeu-west-2%3A317112499880%3Aruntime%2Fmyagentwithidentity-beZKNC5OaQ",
+						"invocations"
+					],
+					"query": [
+						{
+							"key": "qualifier",
+							"value": "DEFAULT"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invoke Agent Memory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJraWQiOiJXTnFHOFlWQTBwalBNRFZSbXhaTnpqSkJ3Z3dHR3Ftbk12NUhaODFuQXFZPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmNjkyNjIyNC1hMDAxLTcwZjktNjQ1Mi00MDI3ZDcxNWE1YzMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0yLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMl8zSnhCVnlxV2QiLCJjbGllbnRfaWQiOiIxb2w3cWJkbm1iN2Q1MWp0OHVxcnBkcWw4bCIsIm9yaWdpbl9qdGkiOiJlMGU2ZGY4NS04OTNhLTRhYzUtOWUxNC04OTY5NjJjYTExOWIiLCJldmVudF9pZCI6Ijk0NTc2NTUyLTQ4MTMtNDQ0NC05NjU4LTk3YWZkYzJiMTNiOSIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3NzMwNjk3MzcsImV4cCI6MTc3MzA3MzMzNywiaWF0IjoxNzczMDY5NzM3LCJqdGkiOiI0NGZlY2YwYy0zZDJiLTRlYWItOGQ5OC0yZTQ0N2UxNmQ4NmQiLCJ1c2VybmFtZSI6InRlc3R1c2VyLXdkOWU4biJ9.nS6bRR7M-OXhwX2jD8QPHB7HigR_D-wBkQahbExU0Y9yEZrNhKsdETB3XNsTUog7mxnzBbUuYn2Q5-cquwC6upUQmsOCfRTTCJ7F2eyatPIwRhkrL4m_Q-hQp79Wdwr4C2QOeR5T13z42k8CZX1RFPr8gk9SzWTljVS41ahXDofA_tQnDq3R7-T-h3KlG1m51ZYj0eat9WgoMorZwus_KvN2zzmCIDLS89xP6dxlpN_-4uGO4mhdbt4_QQrEtN1eWToozS3XQP1YroNu_qopEPe5hny2zqp9YCbBI2yzdNCr-QRQ5N-aptgarqjQwoHqE4z8eNweMKgVpCViMSwAmw"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"prompt\":\"how many times he become PM?\",\"session_id\": \"fb97d9ff-30ac-41eb-8db1-5474673c3874\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://bedrock-agentcore.eu-west-2.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aeu-west-2%3A317112499880%3Aruntime%2Fmyagentwithidentity-beZKNC5OaQ/invocations?qualifier=DEFAULT",
+					"protocol": "https",
+					"host": [
+						"bedrock-agentcore",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"runtimes",
+						"arn%3Aaws%3Abedrock-agentcore%3Aeu-west-2%3A317112499880%3Aruntime%2Fmyagentwithidentity-beZKNC5OaQ",
+						"invocations"
+					],
+					"query": [
+						{
+							"key": "qualifier",
+							"value": "DEFAULT"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

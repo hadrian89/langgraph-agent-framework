@@ -19,11 +19,11 @@ repos:
           - flake8-bugbear
         args:
           - --max-line-length=120
-          - --extend-ignore=E203
+          - --extend-ignore=E203,B010
 
   - repo: https://github.com/pycqa/pylint
     rev: v3.2.2
     hooks:
       - id: pylint
         args:
-          - --disable=C0114,C0115,C0116,E0401,C0103,R0903,C0201,W0718,W0603,R1705
+          - --disable=C0114,C0115,C0116,E0401,C0103,R0903,C0201,W0718,W0603,R1705,C0301,C0415

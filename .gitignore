@@ -13,5 +13,6 @@ __pycache__
 .agentcore_identity_user.env
 deployment-log/
 .DS_Store
-app/agents/__pycache__/
-README.md
+doc/
+.pytest_cache/
+*.pyc
